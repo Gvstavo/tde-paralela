@@ -5,20 +5,14 @@
   "parts": [
     { "type": "wokwi-esp32-devkit-v1", "id": "esp", "top": 43.1, "left": -5, "attrs": {} },
     { "type": "wokwi-wifi-gateway", "id": "wifi", "top": -50, "left": 280, "attrs": {} },
-    {
-      "type": "wokwi-dht22",
-      "id": "dht1",
-      "top": -76.5,
-      "left": 148.2,
-      "attrs": { "temperature": "80" }
-    }
+    { "type": "wokwi-gas-sensor", "id": "mq2", "top": -35.7, "left": -175.4, "attrs": {} }
   ],
   "connections": [
     [ "esp:TX0", "$serialMonitor:RX", "", [] ],
     [ "esp:RX0", "$serialMonitor:TX", "", [] ],
-    [ "dht1:VCC", "esp:VIN", "red", [ "h-241.8", "v161.7" ] ],
-    [ "dht1:GND", "esp:GND.2", "black", [ "v-9.6", "h-222.6", "v163.3" ] ],
-    [ "dht1:SDA", "esp:D15", "green", [ "h-1.7", "v142.7" ] ]
+    [ "mq2:VCC", "esp:VIN", "red", [ "v95.1", "h38.4" ] ],
+    [ "mq2:GND", "esp:GND.1", "purple", [ "h192", "v191.3" ] ],
+    [ "mq2:DOUT", "esp:D27", "green", [ "h105.6", "v48", "h-86.4", "v86.5" ] ]
   ],
   "dependencies": {}
 }
