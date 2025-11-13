@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "author": "Seu Nome",
+  "editor": "Wokwi",
+  "parts": [
+    { "type": "wokwi-esp32-devkit-v1", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-dht22", "id": "dht1", "top": -75, "left": 150, "attrs": {} },
+    {
+      "type": "wokwi-wifi-gateway",
+      "id": "wifi",
+      "top": -50,
+      "left": 280,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [ "esp:TX0", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX0", "$serialMonitor:TX", "", [] ],
+    [ "dht1:VCC", "esp:5V", "red", [] ],
+    [ "dht1:GND", "esp:GND", "black", [] ],
+    [ "dht1:SDA", "esp:D15", "green", [] ]
+  ],
+  "serialMonitor": {
+    "display": "always",
+    "newline": "lf"
+  }
+}
