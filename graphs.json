@@ -312,6 +312,118 @@
         "wires": []
     },
     {
+        "id": "a3c1b2d4.e5f6a7",
+        "type": "ui_group",
+        "name": "Cozinha 1",
+        "tab": "b1b3b3a7.4e7bc",
+        "order": 3,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "f1d2e3a4.b5c6d7",
+        "type": "mqtt in",
+        "z": "2d60f9e1.9f68e6",
+        "name": "ESP32 Cozinha 1 (Fumaça)",
+        "topic": "meu_iot/cozinha1/fumaca_pinstate",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "b8a2a0c.c790b6",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 190,
+        "y": 560,
+        "wires": [
+            [
+                "g1h2j3k4.l5m6n7"
+            ]
+        ]
+    },
+    {
+        "id": "g1h2j3k4.l5m6n7",
+        "type": "function",
+        "z": "2d60f9e1.9f68e6",
+        "name": "Processar Fumaça (0=Alerta, 1=OK)",
+        "func": "// payload é \"0\" (Fumaça) ou \"1\" (Limpo)\n// Sensores digitais de fumaça geralmente enviam 0 quando detectam.\nvar status_texto = \"\";\nvar valor_grafico = 0;\n\nif (msg.payload == \"0\") {\n    status_texto = \"FUMAÇA DETECTADA!\";\n    valor_grafico = 0; // Para o gráfico (0 = Alerta)\n} else { // Assumindo \"1\"\n    status_texto = \"Ar Limpo\";\n    valor_grafico = 1; // Para o gráfico (1 = OK)\n}\n\n// Saída 1: Mensagem para o Texto de Status\nvar msgStatus = {\n    payload: status_texto\n};\n\n// Saída 2: Mensagem para o Gráfico\nvar msgGrafico = {\n    payload: valor_grafico,\n    topic: \"Fumaça\"\n};\n\nreturn [ msgStatus, msgGrafico ];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 560,
+        "wires": [
+            [
+                "i1j2k3l4.m5n6o7"
+            ],
+            [
+                "p1q2r3s4.t5u6v7"
+            ]
+        ]
+    },
+    {
+        "id": "i1j2k3l4.m5n6o7",
+        "type": "ui_text",
+        "z": "2d60f9e1.9f68e6",
+        "group": "a3c1b2d4.e5f6a7",
+        "order": 1,
+        "width": 12,
+        "height": 2,
+        "name": "Status Fumaça",
+        "label": "Alerta de Fumaça",
+        "format": "<b><font color=\"{{msg.payload == 'Ar Limpo' ? 'green' : 'red'}}\" size=\"6\">{{msg.payload}}</font></b>",
+        "layout": "col-center",
+        "x": 680,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "p1q2r3s4.t5u6v7",
+        "type": "ui_chart",
+        "z": "2d60f9e1.9f68e6",
+        "name": "Gráfico Fumaça",
+        "group": "a3c1b2d4.e5f6a7",
+        "order": 2,
+        "width": "12",
+        "height": "6",
+        "label": "Histórico Fumaça (1=OK, 0=Alerta)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "stepped",
+        "nodata": "Aguardando dados...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "1.1",
+        "removeOlder": "1",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#d62728",
+            "#1f77b4",
+            "#2ca02c",
+            "#d62728",
+            "#9467bd",
+            "#8c564b",
+            "#e377c2",
+            "#7f7f7f",
+            "#bcbd22",
+            "#17becf"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "x": 680,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
         "id": "b8a2a0c.c790b6",
         "type": "mqtt-broker",
         "name": "HiveMQ Public",
