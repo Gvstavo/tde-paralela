@@ -74,21 +74,13 @@ while True:
     loop_counter += 1
     valor_publicar_str = "" 
     
-    if loop_counter == 10:
+    valor_ldr = ldr_pin.read()
+    lux = converter_analog_para_lux(valor_ldr)
         
-        valor_publicar_str = str(outlier_val)
+    lux_formatado = round(lux, 2)
+    valor_publicar_str = str(lux_formatado)
         
-        print(f"-> Gerando OUTLIER: {valor_publicar_str} -> Publicando...")
-        
-        loop_counter = 0
-    else:
-        valor_ldr = ldr_pin.read()
-        lux = converter_analog_para_lux(valor_ldr)
-        
-        lux_formatado = round(lux, 2)
-        valor_publicar_str = str(lux_formatado)
-        
-        print(f"Leitura {loop_counter}/10 (ADC): {valor_ldr} -> Convertido (Lux): {lux_formatado} -> Publicando...")
+    print(f"{valor_ldr} -> Convertido (Lux): {lux_formatado} -> Publicando...")
     
     client.publish(LIGHT_TOPIC, valor_publicar_str)
     time.sleep(3)
