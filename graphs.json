@@ -424,6 +424,146 @@
         ]
     },
     {
+        "id": "x1y2z3a4.b5c6d7",
+        "type": "ui_group",
+        "name": "Garagem 1",
+        "tab": "b1b3b3a7.4e7bc",
+        "order": 4,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "w1x2y3z4.a5b6c7",
+        "type": "mqtt in",
+        "z": "2d60f9e1.9f68e6",
+        "name": "ESP32 Garagem 1 (Distância)",
+        "topic": "meu_iot/garagem1/distancia_cm",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "b8a2a0c.c790b6",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 200,
+        "y": 760,
+        "wires": [
+            [
+                "v1w2x3y4.z5a6b7"
+            ]
+        ]
+    },
+    {
+        "id": "v1w2x3y4.z5a6b7",
+        "type": "function",
+        "z": "2d60f9e1.9f68e6",
+        "name": "Processar Distância (<100cm Alerta)",
+        "func": "// Payload é uma string, ex: \"150.75\"\nvar dist_cm = parseFloat(msg.payload);\n\nif (isNaN(dist_cm)) {\n    return null; // Ignora se não for um número\n}\n\nvar status_texto = \"\";\n\n// Lógica do Alerta: < 100cm = Alerta de proximidade\nif (dist_cm < 100) {\n    status_texto = \"ALERTA: Próximo!\";\n} else {\n    status_texto = \"OK - Distância Segura\";\n}\n\n// Saída 1: Valor numérico para Gauge e Gráfico\nvar msgDist = {\n    payload: dist_cm,\n    topic: \"Distância\" // Para o gráfico\n};\n\n// Saída 2: Texto de status para o Alerta\nvar msgStatus = {\n    payload: status_texto\n};\n\nreturn [ msgDist, msgStatus ];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 760,
+        "wires": [
+            [
+                "t1u2v3w4.x5y6z7",
+                "r1s2t3u4.v5w6x7"
+            ],
+            [
+                "q1r2s3t4.u5v6w7"
+            ]
+        ]
+    },
+    {
+        "id": "t1u2v3w4.x5y6z7",
+        "type": "ui_gauge",
+        "z": "2d60f9e1.9f68e6",
+        "name": "Distância",
+        "group": "x1y2z3a4.b5c6d7",
+        "order": 2,
+        "width": "12",
+        "height": "4",
+        "gtype": "gage",
+        "title": "Distância do Obstáculo",
+        "label": "cm",
+        "format": "{{value | number:1}}",
+        "min": 0,
+        "max": "400",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#00b500"
+        ],
+        "seg1": "100",
+        "seg2": "200",
+        "x": 700,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "q1r2s3t4.u5v6w7",
+        "type": "ui_text",
+        "z": "2d60f9e1.9f68e6",
+        "group": "x1y2z3a4.b5c6d7",
+        "order": 1,
+        "width": 12,
+        "height": 2,
+        "name": "Status Alerta",
+        "label": "Status",
+        "format": "<font color=\"{{msg.payload == 'OK - Distância Segura' ? 'green' : 'red'}}\" size=\"5\">\n  <b>{{msg.payload}}</b>\n</font>",
+        "layout": "col-center",
+        "x": 700,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "r1s2t3u4.v5w6x7",
+        "type": "ui_chart",
+        "z": "2d60f9e1.9f68e6",
+        "name": "Histórico Distância",
+        "group": "x1y2z3a4.b5c6d7",
+        "order": 3,
+        "width": "12",
+        "height": "6",
+        "label": "Histórico Distância (1h)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Aguardando dados...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "400",
+        "removeOlder": "1",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#d62728",
+            "#9467bd",
+            "#8c564b",
+            "#e377c2",
+            "#7f7f7f",
+            "#bcbd22",
+            "#17becf"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "x": 720,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
         "id": "b8a2a0c.c790b6",
         "type": "mqtt-broker",
         "name": "HiveMQ Public",
