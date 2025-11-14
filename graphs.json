@@ -10,7 +10,7 @@
         "id": "e6a14a78.a5a6a8",
         "type": "mqtt in",
         "z": "2d60f9e1.9f68e6",
-        "name": "ESP32 Quarto 1",
+        "name": "ESP32 Quarto 1 (Clima)",
         "topic": "meu_iot/quarto1/clima",
         "qos": "0",
         "datatype": "json",
@@ -18,8 +18,8 @@
         "nl": false,
         "rap": true,
         "rh": 0,
-        "x": 160,
-        "y": 180,
+        "x": 180,
+        "y": 120,
         "wires": [
             [
                 "c9c72e27.9b17",
@@ -31,15 +31,15 @@
         "id": "c9c72e27.9b17",
         "type": "function",
         "z": "2d60f9e1.9f68e6",
-        "name": "Dividir Dados",
+        "name": "Dividir Temp/Umidade",
         "func": "// O nó MQTT já converteu o JSON em um objeto: msg.payload\n// msg.payload = {temperatura: 25.5, umidade: 60.1}\n\n// 1. Mensagem para Temperatura (saída 1)\nvar msgTemp = {\n    payload: msg.payload.temperatura,\n    topic: \"Temperatura\"\n};\n\n// 2. Mensagem para Umidade (saída 2)\nvar msgHumid = {\n    payload: msg.payload.umidade,\n    topic: \"Umidade\"\n};\n\n// Retorna as duas mensagens em saídas separadas\nreturn [ msgTemp, msgHumid ];",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 380,
-        "y": 180,
+        "x": 420,
+        "y": 120,
         "wires": [
             [
                 "f9b1d9c3.08f7e8",
@@ -73,8 +73,8 @@
         ],
         "seg1": "18",
         "seg2": "28",
-        "x": 600,
-        "y": 140,
+        "x": 640,
+        "y": 80,
         "wires": []
     },
     {
@@ -99,15 +99,15 @@
         ],
         "seg1": "30",
         "seg2": "70",
-        "x": 600,
-        "y": 220,
+        "x": 640,
+        "y": 160,
         "wires": []
     },
     {
         "id": "d7c2a3b4.1e2f",
         "type": "ui_chart",
         "z": "2d60f9e1.9f68e6",
-        "name": "Histórico",
+        "name": "Histórico Temp/Umidade",
         "group": "e1f1a5b8.f7e048",
         "order": 3,
         "width": "12",
@@ -141,8 +141,8 @@
         ],
         "outputs": 1,
         "useDifferentColor": false,
-        "x": 600,
-        "y": 300,
+        "x": 670,
+        "y": 220,
         "wires": [
             []
         ]
@@ -151,8 +151,8 @@
         "id": "a1b3c4d5.3e4f58",
         "type": "debug",
         "z": "2d60f9e1.9f68e6",
-        "name": "Debug MQTT",
-        "active": true,
+        "name": "Debug Clima",
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -160,8 +160,155 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 380,
-        "y": 100,
+        "x": 420,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "d2a7c5b6.1f3e48",
+        "type": "mqtt in",
+        "z": "2d60f9e1.9f68e6",
+        "name": "ESP32 Sala 1 (Luz)",
+        "topic": "meu_iot/sala1/luz_lux",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "b8a2a0c.c790b6",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 170,
+        "y": 360,
+        "wires": [
+            [
+                "f8b9e3a.f1f4e18",
+                "a2b3c4d5.e6f7a8"
+            ]
+        ]
+    },
+    {
+        "id": "f8b9e3a.f1f4e18",
+        "type": "function",
+        "z": "2d60f9e1.9f68e6",
+        "name": "Processar Lux",
+        "func": "// Payload é uma string, ex: \"123.45\"\nvar lux = parseFloat(msg.payload);\n\n// Parar se não for um número válido\nif (isNaN(lux)) {\n    return null;\n}\n\n// --- Lógica Dia/Noite ---\n// Lógica corrigida: > 50 Lux = Dia (Claro), < 50 Lux = Noite (Escuro)\nvar status = \"\";\nif (lux > 50) {\n    status = \"Dia\";\n} else {\n    status = \"Noite\";\n}\n\n// Saída 1: Mensagem para o Gauge e Gráfico (Valor numérico)\nvar msgLux = {\n    payload: lux,\n    topic: \"Luminosidade\" // Tópico para o gráfico\n};\n\n// Saída 2: Mensagem para o Texto (Status Dia/Noite)\nvar msgStatus = {\n    payload: status\n};\n\n// Retorna as duas mensagens para as saídas 1 e 2\nreturn [ msgLux, msgStatus ];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 360,
+        "wires": [
+            [
+                "a7b4f5c.1e16f08",
+                "b9c8d7e.2a3b4c5"
+            ],
+            [
+                "c6d7e8f.3b4a5d6"
+            ]
+        ]
+    },
+    {
+        "id": "a7b4f5c.1e16f08",
+        "type": "ui_gauge",
+        "z": "2d60f9e1.9f68e6",
+        "name": "Luminosidade",
+        "group": "c5e9a0f9.e4e2a",
+        "order": 1,
+        "width": "6",
+        "height": "3",
+        "gtype": "gage",
+        "title": "Luminosidade",
+        "label": "Lux",
+        "format": "{{value | number:1}}",
+        "min": 0,
+        "max": "1000",
+        "colors": [
+            "#333333",
+            "#e6e600",
+            "#ffff00"
+        ],
+        "seg1": "50",
+        "seg2": "200",
+        "x": 640,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "b9c8d7e.2a3b4c5",
+        "type": "ui_chart",
+        "z": "2d60f9e1.9f68e6",
+        "name": "Histórico Lux",
+        "group": "c5e9a0f9.e4e2a",
+        "order": 3,
+        "width": "12",
+        "height": "6",
+        "label": "Histórico Lux (1 Hora)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Aguardando dados...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "1000",
+        "removeOlder": "1",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#ffff00",
+            "#1f77b4",
+            "#2ca02c",
+            "#d62728",
+            "#9467bd",
+            "#8c564b",
+            "#e377c2",
+            "#7f7f7f",
+            "#bcbd22",
+            "#17becf"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "x": 650,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c6d7e8f.3b4a5d6",
+        "type": "ui_text",
+        "z": "2d60f9e1.9f68e6",
+        "group": "c5e9a0f9.e4e2a",
+        "order": 2,
+        "width": "6",
+        "height": "3",
+        "name": "Status Luz",
+        "label": "Status",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "x": 640,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "a2b3c4d5.e6f7a8",
+        "type": "debug",
+        "z": "2d60f9e1.9f68e6",
+        "name": "Debug Luz",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 300,
         "wires": []
     },
     {
@@ -203,5 +350,15 @@
         "icon": "dashboard",
         "disabled": false,
         "hidden": false
+    },
+    {
+        "id": "c5e9a0f9.e4e2a",
+        "type": "ui_group",
+        "name": "Sala 1",
+        "tab": "b1b3b3a7.4e7bc",
+        "order": 2,
+        "disp": true,
+        "width": "12",
+        "collapse": false
     }
 ]
