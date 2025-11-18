@@ -11,6 +11,7 @@ Uma instância central do Node-RED atua como o cérebro do sistema, consumindo o
 1.  Exibir um **dashboard** em tempo real.
 2.  Enviar **alertas via Telegram** com base em limites pré-definidos.
 
+Demonstração online: (https://www.youtube.com/watch?v=wY97HgkVSKw)    
 ## Arquitetura do Sistema
 
 O fluxo de dados é simples e segue um padrão clássico de IoT:
